@@ -121,14 +121,14 @@
 --------------------------------------------------------------------------- */
 .hero-dots {
   -webkit-mask-image: radial-gradient(
-    ellipse 58% 55% at 50% 32%,
-    #000 0%,
-    transparent 72%
+    ellipse 92% 80% at 50% 42%,
+    #000 55%,
+    transparent 100%
   );
   mask-image: radial-gradient(
-    ellipse 58% 55% at 50% 32%,
-    #000 0%,
-    transparent 72%
+    ellipse 92% 80% at 50% 42%,
+    #000 55%,
+    transparent 100%
   );
 }
 

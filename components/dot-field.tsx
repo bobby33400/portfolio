@@ -2,29 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-type Dot = { ox: number; oy: number; a: number };
-
-type Cluster = {
-  bx: number; // base center x
-  by: number; // base center y
-  ampX: number;
-  ampY: number;
-  fx: number; // orbit frequency x
-  fy: number; // orbit frequency y
-  px: number; // orbit phase x
-  py: number; // orbit phase y
-  depth: number; // 0.35 (far) .. 1 (near)
-  pulseAmp: number;
-  pulseF: number;
-  pulseP: number;
-  opF: number;
-  opP: number;
-  baseOp: number;
-  amber: boolean;
-  dotR: number;
-  dots: Dot[];
-};
-
 const RGB = (s: string): [number, number, number] | null => {
   const p = s.trim().split(/\s+/).map(Number);
   return p.length === 3 && p.every((n) => !Number.isNaN(n))
@@ -32,15 +9,29 @@ const RGB = (s: string): [number, number, number] | null => {
     : null;
 };
 
+type Blob = {
+  bx: number;
+  by: number;
+  ax: number;
+  ay: number;
+  fx: number;
+  fy: number;
+  px: number;
+  py: number;
+  r: number;
+  rp: number;
+  rf: number;
+};
+
 /**
- * Animated abstract dot field of soft clusters.
- * Each cluster is a disc of regularly-spaced dots that drifts (orbit),
- * breathes (scale pulse) and shifts opacity together. Depth gives parallax:
- * nearer clusters are larger, brighter and faster. Amber + some gray dots.
+ * Halftone dot field: a uniform grid of dots whose brightness is driven by an
+ * animated metaball field + a traveling wave. Soft amber/gray dot-clouds drift,
+ * pulse and ripple across the grid — abstract shapes that move and breathe.
  *
- * - Randomized on every load (never the same).
- * - 60fps, capped density, pauses off-screen / when tab hidden.
- * - Reduced motion → a single static frame. Lighter on mobile.
+ * - Randomized every load (blob layout + amber placement).
+ * - Bucketed rendering (one fill per brightness band) → 60fps.
+ * - Pauses off-screen / when hidden. Reduced motion → one static frame.
+ * - Lighter grid + fewer blobs on mobile.
  */
 export function DotField({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -55,74 +46,98 @@ export function DotField({ className }: { className?: string }) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
+    const BUCKETS = 12;
+    const MINA = 0.05; // faint baseline grid
+    const MAXA = 0.62;
+    const MINR = 0.8;
+    const MAXR = 2.4;
+    const GAIN = 0.55;
+    const TAU = Math.PI * 2;
+
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let mobile = false;
-    let clusters: Cluster[] = [];
+    let spacing = 16;
+
+    let xs = new Float32Array(0);
+    let ys = new Float32Array(0);
+    let amberFlag = new Uint8Array(0);
+    let N = 0;
+
     let amber: [number, number, number] = [217, 119, 6];
     let gray: [number, number, number] = [107, 114, 128];
+    const grayFill: string[] = [];
+    const amberFill: string[] = [];
+    const bucketR: number[] = [];
+    const grayB: number[][] = Array.from({ length: BUCKETS }, () => []);
+    const amberB: number[][] = Array.from({ length: BUCKETS }, () => []);
+
+    let blobs: Blob[] = [];
+    let bx: number[] = [];
+    let by: number[] = [];
+    let br2: number[] = [];
+
     let raf = 0;
     let running = false;
     let visible = true;
     let t = 0;
 
+    const buildFills = () => {
+      for (let b = 0; b < BUCKETS; b++) {
+        const f = (b + 0.5) / BUCKETS;
+        const a = (MINA + f * (MAXA - MINA)).toFixed(3);
+        grayFill[b] = `rgba(${gray[0]}, ${gray[1]}, ${gray[2]}, ${a})`;
+        amberFill[b] = `rgba(${amber[0]}, ${amber[1]}, ${amber[2]}, ${a})`;
+        bucketR[b] = MINR + f * (MAXR - MINR);
+      }
+    };
+
     const readColors = () => {
       const cs = getComputedStyle(document.documentElement);
       amber = RGB(cs.getPropertyValue("--dot-rgb")) ?? amber;
       gray = RGB(cs.getPropertyValue("--dot-rgb-2")) ?? gray;
+      buildFills();
     };
 
-    const makeCluster = (): Cluster => {
-      const depth = 0.35 + Math.random() * 0.65;
-      const spacing = mobile ? 26 : 22;
-      const R = (mobile ? 45 : 55) + depth * (mobile ? 35 : 55);
-      const jitter = 2;
-      const dots: Dot[] = [];
-      for (let y = -R; y <= R; y += spacing) {
-        for (let x = -R; x <= R; x += spacing) {
-          const dist = Math.hypot(x, y);
-          if (dist > R) continue;
-          const falloff = Math.pow(1 - dist / R, 1.5);
-          if (falloff < 0.05) continue;
-          dots.push({
-            ox: x + (Math.random() - 0.5) * jitter,
-            oy: y + (Math.random() - 0.5) * jitter,
-            a: falloff,
-          });
+    const seedDots = () => {
+      mobile = width < 768;
+      spacing = mobile ? 20 : 18;
+      const cols = Math.ceil(width / spacing) + 1;
+      const rows = Math.ceil(height / spacing) + 1;
+      N = cols * rows;
+      xs = new Float32Array(N);
+      ys = new Float32Array(N);
+      amberFlag = new Uint8Array(N);
+      let i = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          xs[i] = c * spacing;
+          ys[i] = r * spacing;
+          amberFlag[i] = Math.random() < 0.18 ? 1 : 0;
+          i++;
         }
       }
-      return {
-        bx: Math.random() * width,
-        by: Math.random() * height,
-        ampX: (18 + Math.random() * 34) * depth,
-        ampY: (14 + Math.random() * 26) * depth,
-        fx: (0.04 + Math.random() * 0.05) * depth,
-        fy: (0.04 + Math.random() * 0.05) * depth,
-        px: Math.random() * Math.PI * 2,
-        py: Math.random() * Math.PI * 2,
-        depth,
-        pulseAmp: 0.05 + Math.random() * 0.06,
-        pulseF: 0.3 + Math.random() * 0.4,
-        pulseP: Math.random() * Math.PI * 2,
-        opF: 0.2 + Math.random() * 0.3,
-        opP: Math.random() * Math.PI * 2,
-        baseOp: (mobile ? 0.16 : 0.2) + depth * 0.3,
-        amber: Math.random() < 0.62,
-        dotR: 1.1 + depth * 0.9,
-        dots,
-      };
     };
 
-    const seed = () => {
-      mobile = width < 768;
-      const max = mobile ? 4 : 8;
-      const min = mobile ? 3 : 5;
-      const count = Math.max(
-        min,
-        Math.min(max, Math.round((width * height) / 180000)),
-      );
-      clusters = Array.from({ length: count }, makeCluster);
+    const seedBlobs = () => {
+      const B = mobile ? 3 : 4;
+      blobs = Array.from({ length: B }, () => ({
+        bx: Math.random() * width,
+        by: Math.random() * height,
+        ax: (0.1 + Math.random() * 0.18) * width,
+        ay: (0.1 + Math.random() * 0.18) * height,
+        fx: 0.12 + Math.random() * 0.22,
+        fy: 0.12 + Math.random() * 0.22,
+        px: Math.random() * TAU,
+        py: Math.random() * TAU,
+        r: (mobile ? 90 : 120) + Math.random() * (mobile ? 60 : 110),
+        rp: 0.18 + Math.random() * 0.16,
+        rf: 0.3 + Math.random() * 0.4,
+      }));
+      bx = new Array(B);
+      by = new Array(B);
+      br2 = new Array(B);
     };
 
     const resize = () => {
@@ -133,26 +148,67 @@ export function DotField({ className }: { className?: string }) {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      seed();
+      seedDots();
+      seedBlobs();
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
-      const TAU = Math.PI * 2;
-      for (const c of clusters) {
-        const cx = c.bx + Math.sin(t * c.fx + c.px) * c.ampX;
-        const cy = c.by + Math.sin(t * c.fy + c.py) * c.ampY;
-        const scale = 1 + Math.sin(t * c.pulseF + c.pulseP) * c.pulseAmp;
-        const op = c.baseOp * (0.72 + 0.28 * Math.sin(t * c.opF + c.opP));
-        const col = c.amber ? amber : gray;
-        const prefix = `rgba(${col[0]}, ${col[1]}, ${col[2]}, `;
-        for (const d of c.dots) {
-          const x = cx + d.ox * scale;
-          const y = cy + d.oy * scale;
-          if (x < -10 || x > width + 10 || y < -10 || y > height + 10) continue;
+
+      const B = blobs.length;
+      for (let k = 0; k < B; k++) {
+        const bl = blobs[k];
+        bx[k] = bl.bx + Math.sin(t * bl.fx + bl.px) * bl.ax;
+        by[k] = bl.by + Math.sin(t * bl.fy + bl.py) * bl.ay;
+        const rr = bl.r * (1 + Math.sin(t * bl.rf + bl.px) * bl.rp);
+        br2[k] = rr * rr;
+      }
+
+      for (let b = 0; b < BUCKETS; b++) {
+        grayB[b].length = 0;
+        amberB[b].length = 0;
+      }
+
+      for (let i = 0; i < N; i++) {
+        const x = xs[i];
+        const y = ys[i];
+        let raw = 0;
+        for (let k = 0; k < B; k++) {
+          const dx = x - bx[k];
+          const dy = y - by[k];
+          raw += br2[k] / (dx * dx + dy * dy + br2[k]);
+        }
+        let v = raw * GAIN;
+        if (v > 1) v = 1;
+        const wave = 0.5 + 0.5 * Math.sin(x * 0.018 + y * 0.012 - t * 1.1);
+        v *= 0.5 + 0.5 * wave;
+        let b = (v * BUCKETS) | 0;
+        if (b >= BUCKETS) b = BUCKETS - 1;
+        (amberFlag[i] ? amberB : grayB)[b].push(i);
+      }
+
+      for (let b = 0; b < BUCKETS; b++) {
+        const r = bucketR[b];
+        const gb = grayB[b];
+        if (gb.length) {
+          ctx.fillStyle = grayFill[b];
           ctx.beginPath();
-          ctx.arc(x, y, c.dotR, 0, TAU);
-          ctx.fillStyle = prefix + (d.a * op).toFixed(3) + ")";
+          for (let j = 0; j < gb.length; j++) {
+            const i = gb[j];
+            ctx.moveTo(xs[i] + r, ys[i]);
+            ctx.arc(xs[i], ys[i], r, 0, TAU);
+          }
+          ctx.fill();
+        }
+        const ab = amberB[b];
+        if (ab.length) {
+          ctx.fillStyle = amberFill[b];
+          ctx.beginPath();
+          for (let j = 0; j < ab.length; j++) {
+            const i = ab[j];
+            ctx.moveTo(xs[i] + r, ys[i]);
+            ctx.arc(xs[i], ys[i], r, 0, TAU);
+          }
           ctx.fill();
         }
       }
@@ -175,7 +231,7 @@ export function DotField({ className }: { className?: string }) {
 
     readColors();
     resize();
-    draw(); // first paint (only paint under reduced motion)
+    draw();
     if (!reduced) start();
 
     const onResize = () => {
