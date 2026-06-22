@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/components/i18n-provider";
 import { SkipLink } from "@/components/skip-link";
 import { CustomCursor } from "@/components/custom-cursor";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { dictionaries } from "@/lib/dictionaries";
 import {
   LOCALE_COOKIE,
@@ -75,6 +76,7 @@ export default async function RootLayout({
             {children}
           </I18nProvider>
         </ThemeProvider>
+        <SmoothScroll />
         <CustomCursor />
       </body>
     </html>
