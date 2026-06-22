@@ -1,7 +1,57 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/components/i18n-provider";
 import { profile } from "@/lib/content";
+
+/**
+ * Oversized name wordmark that always spans the full page width.
+ * We render the text once, measure its real bounding box, and set the SVG
+ * viewBox to it — so `w-full` scales the actual name to the container width
+ * responsively, without relying on SVG textLength (flaky with web fonts).
+ */
+function FooterWordmark({ first, last }: { first: string; last: string }) {
+  const textRef = useRef<SVGTextElement>(null);
+  const [viewBox, setViewBox] = useState("0 -74 784 96");
+
+  useEffect(() => {
+    const measure = () => {
+      const node = textRef.current;
+      if (!node) return;
+      try {
+        const b = node.getBBox();
+        if (b.width > 0 && b.height > 0) {
+          setViewBox(`${b.x} ${b.y} ${b.width} ${b.height}`);
+        }
+      } catch {
+        /* getBBox can throw before layout; ignore */
+      }
+    };
+    measure();
+    // Re-measure once the display font has loaded (changes the metrics).
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(measure).catch(() => {});
+    }
+  }, [first, last]);
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox={viewBox}
+      preserveAspectRatio="xMidYMax meet"
+      className="pointer-events-none mt-8 block w-full select-none"
+    >
+      <text ref={textRef} x={0} y={0} fontSize={100} className="font-display font-bold">
+        <tspan style={{ fill: "var(--foreground)", fillOpacity: 0.07 }}>
+          {`${first.toUpperCase()} `}
+        </tspan>
+        <tspan style={{ fill: "var(--primary)", fillOpacity: 0.8 }}>
+          {last.toUpperCase()}
+        </tspan>
+      </text>
+    </svg>
+  );
+}
 
 export function Footer() {
   const { dict } = useI18n();
@@ -34,30 +84,7 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Oversized name wordmark — SVG scales to the full width at any screen size */}
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 1000 90"
-        preserveAspectRatio="xMidYMax meet"
-        className="pointer-events-none mt-8 block w-full select-none"
-      >
-        <text
-          x="500"
-          y="90"
-          textAnchor="middle"
-          textLength={992}
-          lengthAdjust="spacingAndGlyphs"
-          fontSize={96}
-          className="font-display font-bold"
-        >
-          <tspan style={{ fill: "var(--foreground)", fillOpacity: 0.07 }}>
-            {`${first.toUpperCase()} `}
-          </tspan>
-          <tspan style={{ fill: "var(--primary)", fillOpacity: 0.8 }}>
-            {last.toUpperCase()}
-          </tspan>
-        </text>
-      </svg>
+      <FooterWordmark first={first} last={last} />
     </footer>
   );
 }
