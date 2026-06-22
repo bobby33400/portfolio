@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+/* Dark mode driven by a `.dark` class on <html> (next-themes) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Semantic design tokens — warm amber / gold on white.
+   Light and dark designed together (not inverted).
+--------------------------------------------------------------------------- */
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --primary: #d97706; /* amber-600 — button background */
+  --primary-foreground: #ffffff;
+  --primary-hover: #b45309; /* amber-700 — button hover */
+  --secondary: #374151;
+  --secondary-foreground: #ffffff;
+  --accent: #b45309; /* darker amber for accent TEXT (AA on white) */
+  --accent-foreground: #ffffff;
+  --muted: #fff7ed; /* warm amber-50 surface */
+  --muted-foreground: #6b7280;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #d97706;
+  --destructive: #dc2626;
+  --dot-rgb: 217 119 6; /* decorative hero dots (canvas) */
+  --glow: rgba(217, 119, 6, 0.18); /* decorative hero glow */
+}
+
+.dark {
+  --background: #0c0a09;
+  --foreground: #fafaf9;
+  --card: #1c1917;
+  --card-foreground: #fafaf9;
+  --primary: #d97706;
+  --primary-foreground: #ffffff;
+  --primary-hover: #b45309;
+  --secondary: #a8a29e;
+  --secondary-foreground: #1c1917;
+  --accent: #f59e0b; /* brighter amber reads better on dark */
+  --accent-foreground: #1c1917;
+  --muted: #292524;
+  --muted-foreground: #a8a29e;
+  --border: #292524;
+  --input: #292524;
+  --ring: #f59e0b;
+  --destructive: #ef4444;
+  --dot-rgb: 245 158 11;
+  --glow: rgba(245, 158, 11, 0.16);
+}
+
+/* Map tokens to Tailwind utilities (bg-background, text-foreground, ...) */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Anchor links shouldn't tuck content under the sticky nav */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  ::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  /* Visible, consistent keyboard focus */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Decorative dotted graphic for the hero — soft radial fade so it blends
+   cleanly into the white background and never feels heavy.
+--------------------------------------------------------------------------- */
+.hero-dots {
+  -webkit-mask-image: radial-gradient(
+    ellipse 58% 55% at 50% 32%,
+    #000 0%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(
+    ellipse 58% 55% at 50% 32%,
+    #000 0%,
+    transparent 72%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Custom premium cursor (see components/custom-cursor.tsx).
+   Hardcoded amber per spec; only active on fine-pointer, no-reduced-motion.
+--------------------------------------------------------------------------- */
+.cursor-none,
+.cursor-none * {
+  cursor: none !important;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cursor-dot {
+  z-index: 9999;
+  height: 8px;
+  width: 8px;
+  border-radius: 9999px;
+  background: #d97706;
+  box-shadow: 0 0 8px rgba(217, 119, 6, 0.4);
+  transition: height 0.2s ease, width 0.2s ease, opacity 0.2s ease;
+}
+
+.cursor-dot--hover {
+  height: 10px;
+  width: 10px;
+}
+
+.cursor-ring {
+  z-index: 9998;
+  height: 36px;
+  width: 36px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(217, 119, 6, 0.25);
+  background: rgba(217, 119, 6, 0.04);
+  box-shadow: 0 0 18px rgba(217, 119, 6, 0.25);
+  transition: height 0.25s ease, width 0.25s ease, opacity 0.25s ease,
+    background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cursor-ring--hover {
+  height: 56px;
+  width: 56px;
+  border-color: rgba(217, 119, 6, 0.5);
+  background: rgba(217, 119, 6, 0.08);
+  box-shadow: 0 0 28px rgba(217, 119, 6, 0.45);
+}
+
+.cursor-ripple {
+  position: fixed;
+  z-index: 9997;
+  height: 12px;
+  width: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 9999px;
+  border: 2px solid rgba(217, 119, 6, 0.5);
+  pointer-events: none;
+  animation: cursor-ripple 0.55s ease-out forwards;
+}
+
+@keyframes cursor-ripple {
+  from {
+    transform: scale(0.4);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Respect reduced-motion globally (also handled in JS via MotionConfig) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
