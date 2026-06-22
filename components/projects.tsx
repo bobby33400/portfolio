@@ -36,7 +36,9 @@ function ProjectCard({
               alt={`${project.title} preview`}
               fill
               sizes="(max-width: 640px) 100vw, 50vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              className={`transition-transform duration-500 group-hover:scale-[1.04] ${
+                project.imageContain ? "object-contain p-3" : "object-cover"
+              }`}
             />
           ) : (
             <div

@@ -21,6 +21,8 @@ export type ProjectMeta = {
   github?: string;
   /** path under /public, e.g. "/projects/chargestay.png" */
   image?: string;
+  /** show the image fully (object-contain) instead of cropping — for tall phone shots */
+  imageContain?: boolean;
   featured?: boolean;
 };
 
@@ -48,6 +50,7 @@ export const projects: ProjectMeta[] = [
     // Founder & full-stack: mobile app + backend + website (Next.js, Stripe).
     tech: ["Next.js", "React Native", "Supabase", "Stripe"],
     live: "https://chargestay.de",
+    image: "/projects/chargestay.png",
   },
   {
     id: "lea",
@@ -55,12 +58,15 @@ export const projects: ProjectMeta[] = [
     tech: ["Electron", "TypeScript", "Node.js"],
     live: "https://bobby33400.github.io/lea-site/",
     github: "https://github.com/bobby33400/Lea",
+    image: "/projects/lea.png",
   },
   {
     id: "synqro",
     title: "Synqro",
     // Per CV: cross-platform React Native/Expo app, Supabase/Postgres backend.
     tech: ["React Native", "Expo", "Supabase", "TypeScript"],
+    image: "/projects/synqro.png",
+    imageContain: true,
   },
   {
     id: "protrack",
