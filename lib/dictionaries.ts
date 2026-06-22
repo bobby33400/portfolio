@@ -75,12 +75,12 @@ const en: Dictionary = {
       synqro: {
         description:
           "An app for groups and communities that plan events together. Synqro keeps everyone on the same page with shared deadlines for the things that need doing, attendance lists, a photo consent step (DSGVO) for events with students, and a place where people can note their allergies so no one gets left out.",
-        note: "The idea hit me on a two day CERN trip with three of our professors. On day two we had to get to CERN on our own, but nobody in my group knew that, and the plan the professor gave us before the trip was already out of date. On top of that, the professors wanted to put our photos on the HHN website, so they went around asking every student to sign for permission by hand. Synqro is my answer to both: one place that always has the current plan, and a built in way to collect photo consent.",
+        note: "The idea hit me on a two day CERN trip with three of our professors. On day two we had to get to CERN on our own, but nobody in my group knew that, and the plan the professor gave us before the trip was already out of date, so we almost missed the second day of the excursion. On top of that, the professors wanted to put our photos on the HHN website, so they went around asking every student to sign for permission by hand. Synqro is my answer to both: one place that always has the current plan, and a built in way to collect photo consent.",
       },
       protrack: {
         description:
           "A simple app so you never miss a dose of your supplements. ProTrack reminds you to take your protein, creatine and whatever else you're on, so your routine keeps running without you having to think about it.",
-        note: "ProTrack started as a personal tool. I just wanted a no fuss reminder for my own supplement routine. Building it sharpened my eye for when a notification should fire and for the small, reliable details that make a habit actually stick.",
+        note: "My friend and I go to the gym together, and we used to remind each other over WhatsApp to take our supplements. Some days we both just forgot, so I built ProTrack to do the reminding for us. Now neither of us has to think about it.",
       },
     },
   },
@@ -154,12 +154,12 @@ const de: Dictionary = {
       synqro: {
         description:
           "Eine App, mit der Gruppen und Gemeinschaften gemeinsam Events planen. Synqro hält alle auf dem gleichen Stand: mit gemeinsamen Fristen für anstehende Aufgaben, Anwesenheitslisten, einer Einwilligung für Fotos (DSGVO) bei Veranstaltungen mit Schülern und einem Ort, an dem jeder seine Allergien hinterlegen kann, damit niemand außen vor bleibt.",
-        note: "Die Idee kam mir auf einer zweitägigen CERN Exkursion mit drei unserer Professoren. Am zweiten Tag mussten wir auf eigene Faust zum CERN kommen, aber das wusste in meiner Gruppe niemand, und der Plan, den uns der Professor vor der Fahrt gegeben hatte, war schon nicht mehr aktuell. Dazu kam, dass die Professoren unsere Fotos auf die HHN Webseite stellen wollten und dafür jeden Studenten einzeln um eine Unterschrift baten. Synqro ist meine Antwort auf beides: ein Ort, an dem der Plan immer aktuell ist, und eine eingebaute Möglichkeit, die Einwilligung für Fotos einzuholen.",
+        note: "Die Idee kam mir auf einer zweitägigen CERN Exkursion mit drei unserer Professoren. Am zweiten Tag mussten wir auf eigene Faust zum CERN kommen, aber das wusste in meiner Gruppe niemand, und der Plan, den uns der Professor vor der Fahrt gegeben hatte, war schon nicht mehr aktuell, sodass wir den zweiten Tag der Exkursion fast verpasst hätten. Dazu kam, dass die Professoren unsere Fotos auf die HHN Webseite stellen wollten und dafür jeden Studenten einzeln um eine Unterschrift baten. Synqro ist meine Antwort auf beides: ein Ort, an dem der Plan immer aktuell ist, und eine eingebaute Möglichkeit, die Einwilligung für Fotos einzuholen.",
       },
       protrack: {
         description:
           "Eine einfache App, mit der du keine Einnahme deiner Supplements mehr vergisst. ProTrack erinnert dich an Protein, Kreatin und alles andere, was du nimmst, sodass deine Routine ganz nebenbei läuft.",
-        note: "ProTrack ist als persönliches Tool entstanden. Ich wollte einfach eine unkomplizierte Erinnerung für meine eigene Routine. Beim Bauen habe ich ein Gespür dafür entwickelt, wann eine Benachrichtigung kommen sollte, und für die kleinen, verlässlichen Details, die eine Gewohnheit wirklich festigen.",
+        note: "Mein Freund und ich gehen zusammen ins Fitnessstudio und haben uns früher per WhatsApp daran erinnert, unsere Supplements zu nehmen. An manchen Tagen haben wir es beide einfach vergessen, also habe ich ProTrack gebaut, das uns das Erinnern abnimmt. Jetzt muss keiner von uns mehr daran denken.",
       },
     },
   },
