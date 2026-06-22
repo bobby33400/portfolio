@@ -91,6 +91,7 @@ const en: Dictionary = {
     paragraphs: [
       "I'm a software engineering student at Heilbronn University (HHN), and I'm naturally curious. I always want to build something new and solve real problems with clean, thoughtful code.",
       "I work mostly with Java, I love building and setting up PCs from scratch, and I know how to use AI as a tool that makes me faster and sharper. Right now I'm open to internships and working student roles.",
+      "Outside of code, I volunteer in the Hoover Quartier here in Heilbronn. I look after children while their parents are away and go along to events with them as a supervisor, I help older residents with their IT problems like setting up email or changing a password, and I lend a hand with the setup and teardown of events. I genuinely enjoy being there for the people around me.",
     ],
     skillsTitle: "Tools & tech",
     skills: [
@@ -170,6 +171,7 @@ const de: Dictionary = {
     paragraphs: [
       "Ich bin Software Engineering Student an der Hochschule Heilbronn (HHN) und von Natur aus neugierig. Ich will immer etwas Neues bauen und echte Probleme mit sauberem, durchdachtem Code lösen.",
       "Ich arbeite hauptsächlich mit Java, baue und richte mit Begeisterung PCs von Grund auf ein und weiß, wie ich KI als Werkzeug nutze, das mich schneller und besser macht. Aktuell bin ich offen für Praktika und Werkstudentenstellen.",
+      "Abseits vom Code engagiere ich mich ehrenamtlich im Hoover Quartier in Heilbronn. Ich betreue Kinder, während ihre Eltern unterwegs sind, und begleite sie als Betreuer zu Veranstaltungen, ich helfe älteren Menschen bei IT Problemen, etwa beim Einrichten ihres Postfachs oder beim Ändern eines Passworts, und ich packe beim Aufbauen und Abbauen von Events mit an. Es macht mir einfach Freude, für die Menschen um mich herum da zu sein.",
     ],
     skillsTitle: "Tools & Technik",
     skills: [
