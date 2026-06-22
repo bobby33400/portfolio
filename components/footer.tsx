@@ -34,15 +34,30 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Oversized name wordmark — full and uncut */}
-      <div
+      {/* Oversized name wordmark — SVG scales to the full width at any screen size */}
+      <svg
         aria-hidden="true"
-        className="pointer-events-none mt-12 mb-[-0.16em] select-none whitespace-nowrap text-center font-display font-bold uppercase leading-none tracking-tighter"
-        style={{ fontSize: "clamp(2rem, 13.5vw, 15rem)" }}
+        viewBox="0 0 1000 90"
+        preserveAspectRatio="xMidYMax meet"
+        className="pointer-events-none mt-8 block w-full select-none"
       >
-        <span className="text-foreground/[0.07]">{first} </span>
-        <span className="text-primary/80">{last}</span>
-      </div>
+        <text
+          x="500"
+          y="90"
+          textAnchor="middle"
+          textLength={992}
+          lengthAdjust="spacingAndGlyphs"
+          fontSize={96}
+          className="font-display font-bold"
+        >
+          <tspan style={{ fill: "var(--foreground)", fillOpacity: 0.07 }}>
+            {`${first.toUpperCase()} `}
+          </tspan>
+          <tspan style={{ fill: "var(--primary)", fillOpacity: 0.8 }}>
+            {last.toUpperCase()}
+          </tspan>
+        </text>
+      </svg>
     </footer>
   );
 }
