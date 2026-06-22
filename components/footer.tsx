@@ -11,7 +11,7 @@ export function Footer() {
   const last = rest.join(" ");
 
   return (
-    <footer className="relative overflow-hidden border-t border-border pb-8">
+    <footer className="relative overflow-hidden border-t border-border">
       <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
         {/* Brand */}
         <div>
@@ -37,7 +37,7 @@ export function Footer() {
       {/* Oversized name wordmark — full and uncut */}
       <div
         aria-hidden="true"
-        className="pointer-events-none mt-12 select-none whitespace-nowrap text-center font-display font-bold uppercase leading-none tracking-tighter"
+        className="pointer-events-none mt-12 mb-[-0.16em] select-none whitespace-nowrap text-center font-display font-bold uppercase leading-none tracking-tighter"
         style={{ fontSize: "clamp(2rem, 13.5vw, 15rem)" }}
       >
         <span className="text-foreground/[0.07]">{first} </span>
