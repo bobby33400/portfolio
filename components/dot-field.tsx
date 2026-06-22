@@ -9,31 +9,16 @@ const RGB = (s: string): [number, number, number] | null => {
     : null;
 };
 
-type Wave = {
-  bx: number;
-  by: number;
-  ax: number;
-  ay: number;
-  fx: number;
-  fy: number;
-  px: number;
-  py: number;
-  k: number; // spatial frequency (2π / wavelength)
-  w: number; // temporal speed
-  ph: number; // phase
-  amp: number;
-};
-
 /**
- * Dotted wave field: a dense grid of dots covering the whole hero, modulated by
- * several circular waves radiating from slowly-moving sources. Where wave crests
- * overlap (constructive interference) the dots grow brighter and larger; where
- * they cancel, they shrink — producing organic, water-like motion (not a flat
- * linear wave). Amber + gray dots, theme-aware.
+ * Dotted field with organic, random motion. A dense grid of dots samples an
+ * animated low-res value-noise field (a coarse grid of control points that each
+ * oscillate independently) plus a slow drift — so soft amber/gray patches fade
+ * in and out and wander randomly, with no repeating wave pattern. Bright patches
+ * make dots larger; the whole field stays filled at a faint baseline.
  *
- * - Randomized every load. Bucketed rendering → 60fps.
+ * - Randomized every load. Cheap per-dot sampling (no sqrt/sin per dot) → 60fps.
  * - Pauses off-screen / when hidden. Reduced motion → one static frame.
- * - Lighter grid + fewer wave sources on mobile.
+ * - Theme-aware colour + light-mode alpha boost. Lighter grid on mobile.
  */
 export function DotField({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -49,17 +34,18 @@ export function DotField({ className }: { className?: string }) {
     ).matches;
 
     const BUCKETS = 14;
-    const MINA = 0.07; // faint baseline grid (whole section stays filled)
+    const MINA = 0.07;
     const MAXA = 0.72;
     const MINR = 0.5;
     const MAXR = 1.7;
     const TAU = Math.PI * 2;
+    const CELL = 120; // value-noise control-grid cell size (px)
 
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let mobile = false;
-    let spacing = 14;
+    let spacing = 9;
 
     let xs = new Float32Array(0);
     let ys = new Float32Array(0);
@@ -68,15 +54,29 @@ export function DotField({ className }: { className?: string }) {
 
     let amber: [number, number, number] = [217, 119, 6];
     let gray: [number, number, number] = [107, 114, 128];
+    let alphaScale = 1;
     const grayFill: string[] = [];
     const amberFill: string[] = [];
     const bucketR: number[] = [];
     const grayB: number[][] = Array.from({ length: BUCKETS }, () => []);
     const amberB: number[][] = Array.from({ length: BUCKETS }, () => []);
 
-    let waves: Wave[] = [];
-    let sx: number[] = [];
-    let sy: number[] = [];
+    // value-noise control grid (covers canvas + 2-cell margin for the drift)
+    let GW = 0;
+    let GH = 0;
+    let cbase = new Float32Array(0);
+    let cs1 = new Float32Array(0);
+    let cp1 = new Float32Array(0);
+    let cs2 = new Float32Array(0);
+    let cp2 = new Float32Array(0);
+    let cval = new Float32Array(0);
+    let panAx = 0;
+    let panAy = 0;
+    let panFx = 0;
+    let panFy = 0;
+    let panPx = 0;
+    let panPy = 0;
+    const ORIGIN = -2 * CELL;
 
     let raf = 0;
     let running = false;
@@ -86,9 +86,10 @@ export function DotField({ className }: { className?: string }) {
     const buildFills = () => {
       for (let b = 0; b < BUCKETS; b++) {
         const f = (b + 0.5) / BUCKETS;
-        const a = (MINA + f * (MAXA - MINA)).toFixed(3);
-        grayFill[b] = `rgba(${gray[0]}, ${gray[1]}, ${gray[2]}, ${a})`;
-        amberFill[b] = `rgba(${amber[0]}, ${amber[1]}, ${amber[2]}, ${a})`;
+        let a = (MINA + f * (MAXA - MINA)) * alphaScale;
+        if (a > 1) a = 1;
+        grayFill[b] = `rgba(${gray[0]}, ${gray[1]}, ${gray[2]}, ${a.toFixed(3)})`;
+        amberFill[b] = `rgba(${amber[0]}, ${amber[1]}, ${amber[2]}, ${a.toFixed(3)})`;
         bucketR[b] = MINR + f * (MAXR - MINR);
       }
     };
@@ -97,6 +98,8 @@ export function DotField({ className }: { className?: string }) {
       const cs = getComputedStyle(document.documentElement);
       amber = RGB(cs.getPropertyValue("--dot-rgb")) ?? amber;
       gray = RGB(cs.getPropertyValue("--dot-rgb-2")) ?? gray;
+      const sc = parseFloat(cs.getPropertyValue("--dot-alpha"));
+      alphaScale = !Number.isNaN(sc) && sc > 0 ? sc : 1;
       buildFills();
     };
 
@@ -120,27 +123,29 @@ export function DotField({ className }: { className?: string }) {
       }
     };
 
-    const seedWaves = () => {
-      const n = mobile ? 2 : 3;
-      waves = Array.from({ length: n }, () => {
-        const wavelength = 260 + Math.random() * 280; // bigger, broader waves
-        return {
-          bx: (Math.random() * 1.4 - 0.2) * width,
-          by: (Math.random() * 1.4 - 0.2) * height,
-          ax: 25 + Math.random() * 45,
-          ay: 25 + Math.random() * 45,
-          fx: 0.08 + Math.random() * 0.16,
-          fy: 0.08 + Math.random() * 0.16,
-          px: Math.random() * TAU,
-          py: Math.random() * TAU,
-          k: TAU / wavelength,
-          w: 0.45 + Math.random() * 0.6, // slower, gentler swells
-          ph: Math.random() * TAU,
-          amp: 1 / n,
-        };
-      });
-      sx = new Array(n);
-      sy = new Array(n);
+    const seedNoise = () => {
+      GW = Math.ceil(width / CELL) + 4;
+      GH = Math.ceil(height / CELL) + 4;
+      const n = GW * GH;
+      cbase = new Float32Array(n);
+      cs1 = new Float32Array(n);
+      cp1 = new Float32Array(n);
+      cs2 = new Float32Array(n);
+      cp2 = new Float32Array(n);
+      cval = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        cbase[i] = -0.25 + Math.random() * 0.9; // some cells naturally brighter
+        cs1[i] = 0.22 + Math.random() * 0.5; // independent oscillation speeds
+        cp1[i] = Math.random() * TAU;
+        cs2[i] = 0.14 + Math.random() * 0.38;
+        cp2[i] = Math.random() * TAU;
+      }
+      panAx = 40 + Math.random() * 50;
+      panAy = 40 + Math.random() * 50;
+      panFx = 0.05 + Math.random() * 0.08;
+      panFy = 0.05 + Math.random() * 0.08;
+      panPx = Math.random() * TAU;
+      panPy = Math.random() * TAU;
     };
 
     const resize = () => {
@@ -152,18 +157,22 @@ export function DotField({ className }: { className?: string }) {
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       seedDots();
-      seedWaves();
+      seedNoise();
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
-      const n = waves.length;
-      for (let s = 0; s < n; s++) {
-        const wv = waves[s];
-        sx[s] = wv.bx + Math.sin(t * wv.fx + wv.px) * wv.ax;
-        sy[s] = wv.by + Math.sin(t * wv.fy + wv.py) * wv.ay;
+      // evolve the control grid (organic, independent motion)
+      const cells = GW * GH;
+      for (let i = 0; i < cells; i++) {
+        cval[i] =
+          cbase[i] +
+          0.5 * Math.sin(t * cs1[i] + cp1[i]) +
+          0.32 * Math.sin(t * cs2[i] + cp2[i]);
       }
+      const panX = Math.sin(t * panFx + panPx) * panAx;
+      const panY = Math.sin(t * panFy + panPy) * panAy;
 
       for (let b = 0; b < BUCKETS; b++) {
         grayB[b].length = 0;
@@ -171,24 +180,35 @@ export function DotField({ className }: { className?: string }) {
       }
 
       for (let i = 0; i < N; i++) {
-        const x = xs[i];
-        const y = ys[i];
-        let acc = 0;
-        for (let s = 0; s < n; s++) {
-          const dx = x - sx[s];
-          const dy = y - sy[s];
-          const d = Math.sqrt(dx * dx + dy * dy);
-          const wv = waves[s];
-          acc += wv.amp * Math.sin(d * wv.k - t * wv.w + wv.ph);
-        }
-        // acc in ~[-1,1]; constructive crests -> ~1 -> big/bright dots
-        let v = 0.5 + 0.5 * acc;
+        const fx = (xs[i] + panX - ORIGIN) / CELL;
+        const fy = (ys[i] + panY - ORIGIN) / CELL;
+        let gx = fx | 0;
+        let gy = fy | 0;
+        if (gx < 0) gx = 0;
+        else if (gx > GW - 2) gx = GW - 2;
+        if (gy < 0) gy = 0;
+        else if (gy > GH - 2) gy = GH - 2;
+        let tx = fx - gx;
+        if (tx < 0) tx = 0;
+        else if (tx > 1) tx = 1;
+        let ty = fy - gy;
+        if (ty < 0) ty = 0;
+        else if (ty > 1) ty = 1;
+        const sx = tx * tx * (3 - 2 * tx);
+        const sy = ty * ty * (3 - 2 * ty);
+        const i00 = gy * GW + gx;
+        const i10 = i00 + 1;
+        const i01 = i00 + GW;
+        const i11 = i01 + 1;
+        const a = cval[i00] + (cval[i10] - cval[i00]) * sx;
+        const bb = cval[i01] + (cval[i11] - cval[i01]) * sx;
+        let v = a + (bb - a) * sy;
         if (v < 0) v = 0;
         else if (v > 1) v = 1;
-        v = v * v * (1.7 - 0.7 * v); // emphasize crests, keep baseline alive
-        let b = (v * BUCKETS) | 0;
-        if (b >= BUCKETS) b = BUCKETS - 1;
-        (amberFlag[i] ? amberB : grayB)[b].push(i);
+        v = v * v * (3 - 2 * v);
+        let bk = (v * BUCKETS) | 0;
+        if (bk >= BUCKETS) bk = BUCKETS - 1;
+        (amberFlag[i] ? amberB : grayB)[bk].push(i);
       }
 
       for (let b = 0; b < BUCKETS; b++) {
@@ -219,7 +239,7 @@ export function DotField({ className }: { className?: string }) {
     };
 
     const tick = () => {
-      t += 0.014; // gentle, broad motion
+      t += 0.016;
       draw();
       raf = requestAnimationFrame(tick);
     };
