@@ -23,6 +23,8 @@ export type ProjectMeta = {
   image?: string;
   /** show the image fully (object-contain) instead of cropping — for tall phone shots */
   imageContain?: boolean;
+  /** brand accent for the image panel gradient / placeholder */
+  accent?: string;
   featured?: boolean;
 };
 
@@ -67,11 +69,13 @@ export const projects: ProjectMeta[] = [
     tech: ["React Native", "Expo", "Supabase", "TypeScript"],
     image: "/projects/synqro.png",
     imageContain: true,
+    accent: "#7c3aed",
   },
   {
     id: "protrack",
     title: "ProTrack",
     // Assumed to match Qasim's usual stack — confirm if different.
     tech: ["React Native", "Expo", "Supabase"],
+    accent: "#10b981",
   },
 ];

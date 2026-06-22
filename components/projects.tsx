@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Github } from "lucide-react";
+import { ArrowUpRight, Github, Pill } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { useI18n } from "@/components/i18n-provider";
 import { projects, type ProjectMeta } from "@/lib/content";
@@ -31,23 +31,55 @@ function ProjectCard({
         {/* Visual */}
         <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
           {project.image ? (
-            <Image
-              src={project.image}
-              alt={`${project.title} preview`}
-              fill
-              sizes="(max-width: 640px) 100vw, 50vw"
-              className={`transition-transform duration-500 group-hover:scale-[1.04] ${
-                project.imageContain ? "object-contain p-3" : "object-cover"
-              }`}
-            />
+            project.imageContain ? (
+              // Phone screenshot on a branded gradient panel.
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: project.accent
+                    ? `linear-gradient(140deg, ${project.accent}33, ${project.accent}0d)`
+                    : undefined,
+                }}
+              >
+                <Image
+                  src={project.image}
+                  alt={`${project.title} preview`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  className="object-contain p-3 transition-transform duration-500 group-hover:scale-[1.05]"
+                />
+              </div>
+            ) : (
+              <Image
+                src={project.image}
+                alt={`${project.title} preview`}
+                fill
+                sizes="(max-width: 640px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              />
+            )
           ) : (
             <div
               aria-hidden="true"
               className="flex h-full w-full items-center justify-center bg-gradient-to-br from-muted to-card"
+              style={{
+                background: project.accent
+                  ? `linear-gradient(140deg, ${project.accent}33, ${project.accent}0d)`
+                  : undefined,
+              }}
             >
-              <span className="font-display text-4xl font-bold text-muted-foreground/40">
-                {project.title.charAt(0)}
-              </span>
+              {project.accent ? (
+                <Pill
+                  className="h-14 w-14"
+                  style={{ color: project.accent }}
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+              ) : (
+                <span className="font-display text-4xl font-bold text-muted-foreground/40">
+                  {project.title.charAt(0)}
+                </span>
+              )}
             </div>
           )}
         </div>
