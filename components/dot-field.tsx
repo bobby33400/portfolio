@@ -102,7 +102,7 @@ export function DotField({ className }: { className?: string }) {
 
     const seedDots = () => {
       mobile = width < 768;
-      spacing = mobile ? 13 : 11;
+      spacing = mobile ? 12 : 9;
       const cols = Math.ceil(width / spacing) + 1;
       const rows = Math.ceil(height / spacing) + 1;
       N = cols * rows;
@@ -123,18 +123,18 @@ export function DotField({ className }: { className?: string }) {
     const seedWaves = () => {
       const n = mobile ? 2 : 3;
       waves = Array.from({ length: n }, () => {
-        const wavelength = 70 + Math.random() * 120;
+        const wavelength = 260 + Math.random() * 280; // bigger, broader waves
         return {
           bx: (Math.random() * 1.4 - 0.2) * width,
           by: (Math.random() * 1.4 - 0.2) * height,
-          ax: 40 + Math.random() * 90,
-          ay: 40 + Math.random() * 90,
-          fx: 0.1 + Math.random() * 0.26,
-          fy: 0.1 + Math.random() * 0.26,
+          ax: 25 + Math.random() * 45,
+          ay: 25 + Math.random() * 45,
+          fx: 0.08 + Math.random() * 0.16,
+          fy: 0.08 + Math.random() * 0.16,
           px: Math.random() * TAU,
           py: Math.random() * TAU,
           k: TAU / wavelength,
-          w: 1.6 + Math.random() * 1.8, // faster ripple speed
+          w: 0.45 + Math.random() * 0.6, // slower, gentler swells
           ph: Math.random() * TAU,
           amp: 1 / n,
         };
@@ -219,7 +219,7 @@ export function DotField({ className }: { className?: string }) {
     };
 
     const tick = () => {
-      t += 0.02; // a touch faster
+      t += 0.014; // gentle, broad motion
       draw();
       raf = requestAnimationFrame(tick);
     };
