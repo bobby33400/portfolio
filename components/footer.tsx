@@ -11,8 +11,8 @@ export function Footer() {
   const last = rest.join(" ");
 
   return (
-    <footer className="relative overflow-hidden border-t border-border">
-      <div className="mx-auto max-w-6xl px-4 pt-16 pb-[13vw] sm:px-6 sm:pb-[10vw]">
+    <footer className="relative overflow-hidden border-t border-border pb-8">
+      <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
         {/* Brand */}
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
@@ -34,11 +34,11 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Oversized wordmark, bleeding off the bottom edge */}
+      {/* Oversized name wordmark — full and uncut */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-[26%] select-none whitespace-nowrap text-center font-display font-bold uppercase leading-[0.75] tracking-tighter"
-        style={{ fontSize: "clamp(2.5rem, 13.5vw, 13rem)" }}
+        className="pointer-events-none mt-12 select-none whitespace-nowrap text-center font-display font-bold uppercase leading-none tracking-tighter"
+        style={{ fontSize: "clamp(2rem, 13.5vw, 15rem)" }}
       >
         <span className="text-foreground/[0.07]">{first} </span>
         <span className="text-primary/80">{last}</span>
