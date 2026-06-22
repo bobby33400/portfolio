@@ -49,12 +49,13 @@ export function DotField({ className }: { className?: string }) {
 
     let xs = new Float32Array(0);
     let ys = new Float32Array(0);
-    let amberFlag = new Uint8Array(0);
+    let rnd = new Float32Array(0); // per-dot random value, fixed per load
     let N = 0;
 
     let amber: [number, number, number] = [217, 119, 6];
     let gray: [number, number, number] = [107, 114, 128];
     let alphaScale = 1;
+    let amberRatio = 0.16; // fraction of dots that are orange (theme-aware)
     const grayFill: string[] = [];
     const amberFill: string[] = [];
     const bucketR: number[] = [];
@@ -100,6 +101,8 @@ export function DotField({ className }: { className?: string }) {
       gray = RGB(cs.getPropertyValue("--dot-rgb-2")) ?? gray;
       const sc = parseFloat(cs.getPropertyValue("--dot-alpha"));
       alphaScale = !Number.isNaN(sc) && sc > 0 ? sc : 1;
+      const ar = parseFloat(cs.getPropertyValue("--dot-amber-ratio"));
+      if (!Number.isNaN(ar) && ar >= 0) amberRatio = ar;
       buildFills();
     };
 
@@ -111,13 +114,13 @@ export function DotField({ className }: { className?: string }) {
       N = cols * rows;
       xs = new Float32Array(N);
       ys = new Float32Array(N);
-      amberFlag = new Uint8Array(N);
+      rnd = new Float32Array(N);
       let i = 0;
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           xs[i] = c * spacing;
           ys[i] = r * spacing;
-          amberFlag[i] = Math.random() < 0.16 ? 1 : 0;
+          rnd[i] = Math.random();
           i++;
         }
       }
@@ -208,7 +211,7 @@ export function DotField({ className }: { className?: string }) {
         v = v * v * (3 - 2 * v);
         let bk = (v * BUCKETS) | 0;
         if (bk >= BUCKETS) bk = BUCKETS - 1;
-        (amberFlag[i] ? amberB : grayB)[bk].push(i);
+        (rnd[i] < amberRatio ? amberB : grayB)[bk].push(i);
       }
 
       for (let b = 0; b < BUCKETS; b++) {

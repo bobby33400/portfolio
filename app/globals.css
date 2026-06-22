@@ -25,10 +25,11 @@
   --input: #e5e7eb;
   --ring: #d97706;
   --destructive: #dc2626;
-  --dot-rgb: 217 119 6; /* amber hero dots (canvas) */
+  --dot-rgb: 249 115 22; /* vibrant orange hero dots on light */
   --dot-rgb-2: 71 85 105; /* darker gray so dots read on white */
   --dot-alpha: 1.35; /* boost dot opacity on the light theme */
-  --glow: rgba(217, 119, 6, 0.18); /* decorative hero glow */
+  --dot-amber-ratio: 0.45; /* more orange dots on light */
+  --glow: rgba(249, 115, 22, 0.2); /* decorative hero glow */
 }
 
 .dark {
@@ -52,6 +53,7 @@
   --dot-rgb: 245 158 11;
   --dot-rgb-2: 130 130 140;
   --dot-alpha: 1; /* dark mode already reads well */
+  --dot-amber-ratio: 0.16;
   --glow: rgba(245, 158, 11, 0.16);
 }
 
