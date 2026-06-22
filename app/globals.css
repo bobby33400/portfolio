@@ -50,11 +50,11 @@
   --input: #292524;
   --ring: #f59e0b;
   --destructive: #ef4444;
-  --dot-rgb: 245 158 11;
+  --dot-rgb: 249 115 22; /* vibrant orange dots on dark too */
   --dot-rgb-2: 130 130 140;
-  --dot-alpha: 1; /* dark mode already reads well */
-  --dot-amber-ratio: 0.16;
-  --glow: rgba(245, 158, 11, 0.16);
+  --dot-alpha: 1;
+  --dot-amber-ratio: 0.45;
+  --glow: rgba(249, 115, 22, 0.16);
 }
 
 /* Map tokens to Tailwind utilities (bg-background, text-foreground, ...) */

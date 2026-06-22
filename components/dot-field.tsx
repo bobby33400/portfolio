@@ -36,8 +36,8 @@ export function DotField({ className }: { className?: string }) {
     const BUCKETS = 14;
     const MINA = 0.07;
     const MAXA = 0.72;
-    const MINR = 0.5;
-    const MAXR = 1.7;
+    const MINR = 1; // clean, well-defined dots (no sub-pixel fuzz)
+    const MAXR = 2.3;
     const TAU = Math.PI * 2;
     const CELL = 120; // value-noise control-grid cell size (px)
 
