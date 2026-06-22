@@ -120,14 +120,20 @@
    cleanly into the white background and never feels heavy.
 --------------------------------------------------------------------------- */
 .hero-dots {
-  -webkit-mask-image: radial-gradient(
-    ellipse 92% 80% at 50% 42%,
-    #000 55%,
+  /* Fill the whole hero edge-to-edge; only soften the bottom into the next
+     section and the very top under the nav. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 7%,
+    #000 80%,
     transparent 100%
   );
-  mask-image: radial-gradient(
-    ellipse 92% 80% at 50% 42%,
-    #000 55%,
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 7%,
+    #000 80%,
     transparent 100%
   );
 }

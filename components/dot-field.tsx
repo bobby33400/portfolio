@@ -9,7 +9,7 @@ const RGB = (s: string): [number, number, number] | null => {
     : null;
 };
 
-type Blob = {
+type Wave = {
   bx: number;
   by: number;
   ax: number;
@@ -18,20 +18,22 @@ type Blob = {
   fy: number;
   px: number;
   py: number;
-  r: number;
-  rp: number;
-  rf: number;
+  k: number; // spatial frequency (2π / wavelength)
+  w: number; // temporal speed
+  ph: number; // phase
+  amp: number;
 };
 
 /**
- * Halftone dot field: a uniform grid of dots whose brightness is driven by an
- * animated metaball field + a traveling wave. Soft amber/gray dot-clouds drift,
- * pulse and ripple across the grid — abstract shapes that move and breathe.
+ * Dotted wave field: a dense grid of dots covering the whole hero, modulated by
+ * several circular waves radiating from slowly-moving sources. Where wave crests
+ * overlap (constructive interference) the dots grow brighter and larger; where
+ * they cancel, they shrink — producing organic, water-like motion (not a flat
+ * linear wave). Amber + gray dots, theme-aware.
  *
- * - Randomized every load (blob layout + amber placement).
- * - Bucketed rendering (one fill per brightness band) → 60fps.
+ * - Randomized every load. Bucketed rendering → 60fps.
  * - Pauses off-screen / when hidden. Reduced motion → one static frame.
- * - Lighter grid + fewer blobs on mobile.
+ * - Lighter grid + fewer wave sources on mobile.
  */
 export function DotField({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -46,19 +48,18 @@ export function DotField({ className }: { className?: string }) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const BUCKETS = 12;
-    const MINA = 0.05; // faint baseline grid
-    const MAXA = 0.62;
-    const MINR = 0.8;
-    const MAXR = 2.4;
-    const GAIN = 0.55;
+    const BUCKETS = 14;
+    const MINA = 0.07; // faint baseline grid (whole section stays filled)
+    const MAXA = 0.72;
+    const MINR = 0.7;
+    const MAXR = 2.9;
     const TAU = Math.PI * 2;
 
     let width = 0;
     let height = 0;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let mobile = false;
-    let spacing = 16;
+    let spacing = 14;
 
     let xs = new Float32Array(0);
     let ys = new Float32Array(0);
@@ -73,10 +74,9 @@ export function DotField({ className }: { className?: string }) {
     const grayB: number[][] = Array.from({ length: BUCKETS }, () => []);
     const amberB: number[][] = Array.from({ length: BUCKETS }, () => []);
 
-    let blobs: Blob[] = [];
-    let bx: number[] = [];
-    let by: number[] = [];
-    let br2: number[] = [];
+    let waves: Wave[] = [];
+    let sx: number[] = [];
+    let sy: number[] = [];
 
     let raf = 0;
     let running = false;
@@ -102,7 +102,7 @@ export function DotField({ className }: { className?: string }) {
 
     const seedDots = () => {
       mobile = width < 768;
-      spacing = mobile ? 20 : 18;
+      spacing = mobile ? 18 : 14;
       const cols = Math.ceil(width / spacing) + 1;
       const rows = Math.ceil(height / spacing) + 1;
       N = cols * rows;
@@ -114,30 +114,33 @@ export function DotField({ className }: { className?: string }) {
         for (let c = 0; c < cols; c++) {
           xs[i] = c * spacing;
           ys[i] = r * spacing;
-          amberFlag[i] = Math.random() < 0.18 ? 1 : 0;
+          amberFlag[i] = Math.random() < 0.2 ? 1 : 0;
           i++;
         }
       }
     };
 
-    const seedBlobs = () => {
-      const B = mobile ? 3 : 4;
-      blobs = Array.from({ length: B }, () => ({
-        bx: Math.random() * width,
-        by: Math.random() * height,
-        ax: (0.1 + Math.random() * 0.18) * width,
-        ay: (0.1 + Math.random() * 0.18) * height,
-        fx: 0.12 + Math.random() * 0.22,
-        fy: 0.12 + Math.random() * 0.22,
-        px: Math.random() * TAU,
-        py: Math.random() * TAU,
-        r: (mobile ? 90 : 120) + Math.random() * (mobile ? 60 : 110),
-        rp: 0.18 + Math.random() * 0.16,
-        rf: 0.3 + Math.random() * 0.4,
-      }));
-      bx = new Array(B);
-      by = new Array(B);
-      br2 = new Array(B);
+    const seedWaves = () => {
+      const n = mobile ? 3 : 5;
+      waves = Array.from({ length: n }, () => {
+        const wavelength = 70 + Math.random() * 120;
+        return {
+          bx: (Math.random() * 1.4 - 0.2) * width,
+          by: (Math.random() * 1.4 - 0.2) * height,
+          ax: 40 + Math.random() * 90,
+          ay: 40 + Math.random() * 90,
+          fx: 0.1 + Math.random() * 0.26,
+          fy: 0.1 + Math.random() * 0.26,
+          px: Math.random() * TAU,
+          py: Math.random() * TAU,
+          k: TAU / wavelength,
+          w: 1.6 + Math.random() * 1.8, // faster ripple speed
+          ph: Math.random() * TAU,
+          amp: 1 / n,
+        };
+      });
+      sx = new Array(n);
+      sy = new Array(n);
     };
 
     const resize = () => {
@@ -149,19 +152,17 @@ export function DotField({ className }: { className?: string }) {
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       seedDots();
-      seedBlobs();
+      seedWaves();
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
-      const B = blobs.length;
-      for (let k = 0; k < B; k++) {
-        const bl = blobs[k];
-        bx[k] = bl.bx + Math.sin(t * bl.fx + bl.px) * bl.ax;
-        by[k] = bl.by + Math.sin(t * bl.fy + bl.py) * bl.ay;
-        const rr = bl.r * (1 + Math.sin(t * bl.rf + bl.px) * bl.rp);
-        br2[k] = rr * rr;
+      const n = waves.length;
+      for (let s = 0; s < n; s++) {
+        const wv = waves[s];
+        sx[s] = wv.bx + Math.sin(t * wv.fx + wv.px) * wv.ax;
+        sy[s] = wv.by + Math.sin(t * wv.fy + wv.py) * wv.ay;
       }
 
       for (let b = 0; b < BUCKETS; b++) {
@@ -172,16 +173,19 @@ export function DotField({ className }: { className?: string }) {
       for (let i = 0; i < N; i++) {
         const x = xs[i];
         const y = ys[i];
-        let raw = 0;
-        for (let k = 0; k < B; k++) {
-          const dx = x - bx[k];
-          const dy = y - by[k];
-          raw += br2[k] / (dx * dx + dy * dy + br2[k]);
+        let acc = 0;
+        for (let s = 0; s < n; s++) {
+          const dx = x - sx[s];
+          const dy = y - sy[s];
+          const d = Math.sqrt(dx * dx + dy * dy);
+          const wv = waves[s];
+          acc += wv.amp * Math.sin(d * wv.k - t * wv.w + wv.ph);
         }
-        let v = raw * GAIN;
-        if (v > 1) v = 1;
-        const wave = 0.5 + 0.5 * Math.sin(x * 0.018 + y * 0.012 - t * 1.1);
-        v *= 0.5 + 0.5 * wave;
+        // acc in ~[-1,1]; constructive crests -> ~1 -> big/bright dots
+        let v = 0.5 + 0.5 * acc;
+        if (v < 0) v = 0;
+        else if (v > 1) v = 1;
+        v = v * v * (1.7 - 0.7 * v); // emphasize crests, keep baseline alive
         let b = (v * BUCKETS) | 0;
         if (b >= BUCKETS) b = BUCKETS - 1;
         (amberFlag[i] ? amberB : grayB)[b].push(i);
@@ -215,7 +219,7 @@ export function DotField({ className }: { className?: string }) {
     };
 
     const tick = () => {
-      t += 0.016;
+      t += 0.02; // a touch faster
       draw();
       raf = requestAnimationFrame(tick);
     };
