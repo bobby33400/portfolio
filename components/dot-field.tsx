@@ -51,8 +51,8 @@ export function DotField({ className }: { className?: string }) {
     const BUCKETS = 14;
     const MINA = 0.07; // faint baseline grid (whole section stays filled)
     const MAXA = 0.72;
-    const MINR = 0.7;
-    const MAXR = 2.9;
+    const MINR = 0.5;
+    const MAXR = 1.7;
     const TAU = Math.PI * 2;
 
     let width = 0;
@@ -102,7 +102,7 @@ export function DotField({ className }: { className?: string }) {
 
     const seedDots = () => {
       mobile = width < 768;
-      spacing = mobile ? 18 : 14;
+      spacing = mobile ? 13 : 11;
       const cols = Math.ceil(width / spacing) + 1;
       const rows = Math.ceil(height / spacing) + 1;
       N = cols * rows;
@@ -114,14 +114,14 @@ export function DotField({ className }: { className?: string }) {
         for (let c = 0; c < cols; c++) {
           xs[i] = c * spacing;
           ys[i] = r * spacing;
-          amberFlag[i] = Math.random() < 0.2 ? 1 : 0;
+          amberFlag[i] = Math.random() < 0.16 ? 1 : 0;
           i++;
         }
       }
     };
 
     const seedWaves = () => {
-      const n = mobile ? 3 : 5;
+      const n = mobile ? 2 : 3;
       waves = Array.from({ length: n }, () => {
         const wavelength = 70 + Math.random() * 120;
         return {
