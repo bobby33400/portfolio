@@ -62,7 +62,7 @@ function ProjectCard({
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${project.title} — ${dict.projects.codeLabel}`}
+                  aria-label={`${project.title}, ${dict.projects.codeLabel}`}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   <Github className="h-[18px] w-[18px]" aria-hidden="true" />
@@ -73,7 +73,7 @@ function ProjectCard({
                   href={project.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${project.title} — ${dict.projects.liveLabel}`}
+                  aria-label={`${project.title}, ${dict.projects.liveLabel}`}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 >
                   <ArrowUpRight className="h-5 w-5" aria-hidden="true" />

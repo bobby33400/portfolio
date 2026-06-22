@@ -48,9 +48,9 @@ const en: Dictionary = {
   nav: { work: "Work", about: "About", contact: "Contact" },
   hero: {
     role: "Software Engineering Student",
-    availability: "Open to internships & working-student roles",
+    availability: "Open to internships and working student roles",
     intro:
-      "I'm a software engineering student in Heilbronn who loves building innovative things and solving real problems.",
+      "I'm a software engineering student in Heilbronn. I love building new things and figuring out real problems.",
     viewWork: "View my work",
     getInTouch: "Get in touch",
     resume: "Résumé",
@@ -64,23 +64,23 @@ const en: Dictionary = {
     items: {
       chargestay: {
         description:
-          "Germany's first peer-to-peer marketplace for private EV charging. Drivers find and book a private Wallbox nearby on a live map — filtered by plug type, power and availability — and pay securely through Stripe, while hosts list their own Wallbox and earn passive income.",
-        note: "I'm building ChargeStay end to end — from the live map and booking flow to the Stripe payments and the host side. It taught me how much trust a real product has to earn when people put both their money and their charger on the line.",
+          "Germany's first marketplace where people rent out their own EV chargers. Drivers find a free Wallbox nearby on a live map, filter by plug type, power and availability, and pay securely through Stripe. If you own a Wallbox, you list it and earn a bit on the side.",
+        note: "I'm building ChargeStay from end to end, from the live map and booking flow to the Stripe payments and the host side. It taught me how much trust a real product has to earn when people put both their money and their charger on the line.",
       },
       lea: {
         description:
-          "A menu-bar app that turns Claude into an overnight worker. Lea watches your Claude usage limits and autonomously runs a queue of tasks whenever capacity is free — pausing when you hit a limit and resuming the exact moment it resets. Queue work before bed, wake up to it done. Open source (MIT), cross-platform with sandboxed execution.",
-        note: "Lea scratched my own itch — I hated watching Claude sit idle after a 3am limit reset. Building the reset-aware retry logic and safe, sandboxed headless execution taught me a lot about reliability and doing real work while the user is away.",
+          "A little menu bar app that keeps Claude working while you sleep. Lea watches your usage limit and works through a queue of tasks on its own whenever you have capacity. When you hit the limit it pauses, then picks right back up the moment it resets. Line up tasks before bed and wake up to them done. It's open source (MIT) and runs safely sandboxed on Mac, Windows and Linux.",
+        note: "Lea started as my own annoyance. I hated watching Claude sit idle after the limit reset at 3am. Building the logic that knows exactly when the limit comes back, and running everything safely in the background, taught me a lot about reliability and getting real work done while you're away.",
       },
       synqro: {
         description:
-          "A coordination app for groups and communities planning events together. Synqro keeps everyone in sync with shared deadlines for the tasks that need to get done, attendance lists, a photo-consent privacy policy (DSGVO) for events with students, and a place for people to record allergies so no one is left out.",
-        note: "I designed Synqro around a frustration I kept running into: group events fall apart in the small details. My focus was making coordination — deadlines, attendance, dietary needs, data-protection consent — feel effortless and privacy-first.",
+          "An app for groups and communities that plan events together. Synqro keeps everyone on the same page with shared deadlines for the things that need doing, attendance lists, a photo consent step (DSGVO) for events with students, and a place where people can note their allergies so no one gets left out.",
+        note: "I built Synqro around something that kept frustrating me: group events fall apart in the small details. I wanted the coordination part, the deadlines, who's coming, dietary needs and consent, to feel effortless and to put people's privacy first.",
       },
       protrack: {
         description:
-          "A supplement-tracking app that makes sure you never miss a dose. ProTrack sends timely notifications for your protein, creatine and other supplements, so your routine stays on track without you having to think about it.",
-        note: "ProTrack started as a personal tool — I wanted a no-nonsense reminder for my own supplement routine. Building it sharpened my eye for notification timing and the kind of small, reliable UX that makes a habit actually stick.",
+          "A simple app so you never miss a dose of your supplements. ProTrack reminds you to take your protein, creatine and whatever else you're on, so your routine keeps running without you having to think about it.",
+        note: "ProTrack started as a personal tool. I just wanted a no fuss reminder for my own supplement routine. Building it sharpened my eye for when a notification should fire and for the small, reliable details that make a habit actually stick.",
       },
     },
   },
@@ -89,8 +89,8 @@ const en: Dictionary = {
     title: "A bit about me",
     location: "Heilbronn, Germany",
     paragraphs: [
-      "I'm a software engineering student at Heilbronn University (HHN), driven by curiosity — I'm always looking to build something innovative and to solve real problems with clean, thoughtful engineering.",
-      "I work mostly with Java, love building and setting up PCs from scratch, and I know how to put AI to work as a tool that makes me faster and sharper. Right now I'm open to internships and working-student roles.",
+      "I'm a software engineering student at Heilbronn University (HHN), and I'm naturally curious. I always want to build something new and solve real problems with clean, thoughtful code.",
+      "I work mostly with Java, I love building and setting up PCs from scratch, and I know how to use AI as a tool that makes me faster and sharper. Right now I'm open to internships and working student roles.",
     ],
     skillsTitle: "Tools & tech",
     skills: [
@@ -106,7 +106,7 @@ const en: Dictionary = {
     eyebrow: "Contact",
     title: "Let's build something together",
     blurb:
-      "Open to internships and working-student roles. Have something in mind or just want to connect? My inbox is always open.",
+      "Open to internships and working student roles. Got something in mind, or just want to say hi? My inbox is always open.",
     connect: "Let's connect",
   },
   footer: {
@@ -126,10 +126,10 @@ const en: Dictionary = {
 const de: Dictionary = {
   nav: { work: "Projekte", about: "Über mich", contact: "Kontakt" },
   hero: {
-    role: "Software-Engineering-Student",
-    availability: "Offen für Praktika & Werkstudentenstellen",
+    role: "Software Engineering Student",
+    availability: "Offen für Praktika und Werkstudentenstellen",
     intro:
-      "Ich bin Software-Engineering-Student in Heilbronn und liebe es, Innovatives zu bauen und echte Probleme zu lösen.",
+      "Ich bin Software Engineering Student in Heilbronn. Ich baue gerne Neues und tüftle an echten Problemen.",
     viewWork: "Meine Projekte",
     getInTouch: "Kontakt aufnehmen",
     resume: "Lebenslauf",
@@ -138,28 +138,28 @@ const de: Dictionary = {
     eyebrow: "Ausgewählte Projekte",
     title: "Projekte",
     noteLabel: "Meine Sicht",
-    liveLabel: "Live-Seite",
+    liveLabel: "Website",
     codeLabel: "Quellcode",
     items: {
       chargestay: {
         description:
-          "Deutschlands erster Peer-to-Peer-Marktplatz für privates E-Auto-Laden. Fahrer finden und buchen eine private Wallbox in der Nähe über eine Live-Karte – gefiltert nach Steckertyp, Leistung und Verfügbarkeit – und zahlen sicher über Stripe, während Hosts ihre eigene Wallbox vermieten und passives Einkommen verdienen.",
-        note: "Ich baue ChargeStay von A bis Z – von der Live-Karte und dem Buchungsflow bis zu den Stripe-Zahlungen und der Host-Seite. Dabei habe ich gelernt, wie viel Vertrauen ein echtes Produkt verdienen muss, wenn Menschen ihr Geld und ihre Ladestation anvertrauen.",
+          "Deutschlands erster Marktplatz, auf dem Privatpersonen ihre eigene Wallbox zum Laden von Elektroautos vermieten. Fahrer finden eine freie Wallbox in der Nähe auf einer Karte in Echtzeit, filtern nach Steckertyp, Leistung und Verfügbarkeit und zahlen sicher über Stripe. Wer eine Wallbox hat, bietet sie an und verdient nebenbei etwas dazu.",
+        note: "Ich baue ChargeStay von A bis Z, von der Karte und dem Buchungsablauf bis zu den Zahlungen über Stripe und der Seite für Gastgeber. Dabei habe ich gelernt, wie viel Vertrauen ein echtes Produkt verdienen muss, wenn Menschen ihm ihr Geld und ihre Ladestation anvertrauen.",
       },
       lea: {
         description:
-          "Eine Menüleisten-App, die Claude zum Nachtschicht-Arbeiter macht. Lea überwacht deine Claude-Nutzungslimits und arbeitet eine Aufgaben-Warteschlange autonom ab, sobald wieder Kapazität frei ist – sie pausiert beim Erreichen des Limits und macht genau zum Reset weiter. Aufgaben vor dem Schlafen einreihen, fertig aufwachen. Open Source (MIT), plattformübergreifend mit sandboxed Ausführung.",
-        note: "Lea ist aus meinem eigenen Bedürfnis entstanden – ich fand es ärgerlich, wie Claude nach einem Limit-Reset um 3 Uhr nachts ungenutzt blieb. Das Entwickeln der reset-bewussten Retry-Logik und der sicheren, sandboxed Ausführung im Hintergrund hat mir viel über Zuverlässigkeit beigebracht.",
+          "Eine kleine App in der Menüleiste, die Claude für dich weiterarbeiten lässt, während du schläfst. Lea behält dein Nutzungslimit im Blick und arbeitet eine Liste von Aufgaben von allein ab, sobald wieder Kapazität frei ist. Beim Limit macht sie Pause und setzt genau dann fort, wenn es zurückgesetzt wird. Aufgaben vor dem Schlafen anlegen und am Morgen ist alles erledigt. Open Source (MIT) und sicher abgeschottet auf Mac, Windows und Linux.",
+        note: "Lea ist aus meinem eigenen Ärger entstanden. Es hat mich gestört, dass Claude nachts um 3, kurz nachdem das Limit zurückgesetzt wurde, einfach ungenutzt blieb. Die Logik zu bauen, die genau weiß, wann es wieder losgeht, und alles sicher im Hintergrund laufen zu lassen, hat mir viel über Zuverlässigkeit beigebracht.",
       },
       synqro: {
         description:
-          "Eine Koordinations-App für Gruppen und Communities, die gemeinsam Events planen. Synqro hält alle auf dem gleichen Stand: mit gemeinsamen Deadlines für anstehende Aufgaben, Anwesenheitslisten, einer Datenschutzerklärung (DSGVO) für Fotos bei Veranstaltungen mit Schülern und einem Ort, an dem jeder seine Allergien hinterlegen kann, damit niemand außen vor bleibt.",
-        note: "Synqro ist aus einem Frust entstanden, den ich immer wieder erlebt habe: Gruppen-Events scheitern an den kleinen Details. Mir war wichtig, Koordination – Deadlines, Anwesenheit, Allergien, Datenschutz-Einwilligung – mühelos und datenschutzfreundlich zu machen.",
+          "Eine App, mit der Gruppen und Gemeinschaften gemeinsam Events planen. Synqro hält alle auf dem gleichen Stand: mit gemeinsamen Fristen für anstehende Aufgaben, Anwesenheitslisten, einer Einwilligung für Fotos (DSGVO) bei Veranstaltungen mit Schülern und einem Ort, an dem jeder seine Allergien hinterlegen kann, damit niemand außen vor bleibt.",
+        note: "Synqro ist aus einem Frust entstanden, den ich immer wieder erlebt habe: Gruppenevents scheitern an den kleinen Details. Mir war wichtig, dass die Koordination einfach bleibt, also Fristen, wer kommt, Allergien und die Einwilligung, und dass die Privatsphäre dabei an erster Stelle steht.",
       },
       protrack: {
         description:
-          "Eine Supplement-Tracking-App, mit der du keine Einnahme mehr vergisst. ProTrack schickt dir rechtzeitige Benachrichtigungen für dein Protein, Kreatin und weitere Supplements, damit deine Routine ganz nebenbei läuft.",
-        note: "ProTrack ist als persönliches Tool entstanden – ich wollte eine unkomplizierte Erinnerung für meine eigene Supplement-Routine. Beim Bauen habe ich ein Gespür für das richtige Timing von Benachrichtigungen und für kleine, verlässliche UX entwickelt, die eine Gewohnheit wirklich festigt.",
+          "Eine einfache App, mit der du keine Einnahme deiner Supplements mehr vergisst. ProTrack erinnert dich an Protein, Kreatin und alles andere, was du nimmst, sodass deine Routine ganz nebenbei läuft.",
+        note: "ProTrack ist als persönliches Tool entstanden. Ich wollte einfach eine unkomplizierte Erinnerung für meine eigene Routine. Beim Bauen habe ich ein Gespür dafür entwickelt, wann eine Benachrichtigung kommen sollte, und für die kleinen, verlässlichen Details, die eine Gewohnheit wirklich festigen.",
       },
     },
   },
@@ -168,15 +168,15 @@ const de: Dictionary = {
     title: "Ein bisschen über mich",
     location: "Heilbronn, Deutschland",
     paragraphs: [
-      "Ich bin Software-Engineering-Student an der Hochschule Heilbronn (HHN) und von Neugier getrieben – ich möchte immer etwas Innovatives bauen und echte Probleme mit sauberem, durchdachtem Engineering lösen.",
-      "Ich arbeite hauptsächlich mit Java, baue und richte mit Begeisterung PCs von Grund auf ein und weiß, wie ich KI als Werkzeug einsetze, das mich schneller und besser macht. Aktuell bin ich offen für Praktika und Werkstudententätigkeiten.",
+      "Ich bin Software Engineering Student an der Hochschule Heilbronn (HHN) und von Natur aus neugierig. Ich will immer etwas Neues bauen und echte Probleme mit sauberem, durchdachtem Code lösen.",
+      "Ich arbeite hauptsächlich mit Java, baue und richte mit Begeisterung PCs von Grund auf ein und weiß, wie ich KI als Werkzeug nutze, das mich schneller und besser macht. Aktuell bin ich offen für Praktika und Werkstudentenstellen.",
     ],
     skillsTitle: "Tools & Technik",
     skills: [
       "Java",
       "Problemlösung",
-      "KI-Tools",
-      "PC-Zusammenbau & Einrichtung",
+      "KI Tools",
+      "PC Zusammenbau & Einrichtung",
       "Git",
       "Software Engineering",
     ],
