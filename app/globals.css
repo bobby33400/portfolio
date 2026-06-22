@@ -25,7 +25,8 @@
   --input: #e5e7eb;
   --ring: #d97706;
   --destructive: #dc2626;
-  --dot-rgb: 217 119 6; /* decorative hero dots (canvas) */
+  --dot-rgb: 217 119 6; /* amber hero dots (canvas) */
+  --dot-rgb-2: 107 114 128; /* gray hero dots for depth */
   --glow: rgba(217, 119, 6, 0.18); /* decorative hero glow */
 }
 
@@ -48,6 +49,7 @@
   --ring: #f59e0b;
   --destructive: #ef4444;
   --dot-rgb: 245 158 11;
+  --dot-rgb-2: 130 130 140;
   --glow: rgba(245, 158, 11, 0.16);
 }
 
