@@ -107,7 +107,7 @@ const en: Dictionary = {
     eyebrow: "Contact",
     title: "Let's build something together",
     blurb:
-      "Open to internships and working student roles. Got something in mind, or just want to say hi? My inbox is always open.",
+      "Got something in mind, or just want to say hi? My inbox is always open.",
     connect: "Let's connect",
   },
   footer: {
@@ -187,7 +187,7 @@ const de: Dictionary = {
     eyebrow: "Kontakt",
     title: "Lass uns zusammen etwas bauen",
     blurb:
-      "Offen für Praktika und Werkstudentenstellen. Du hast etwas im Kopf oder möchtest dich einfach vernetzen? Mein Postfach ist immer offen.",
+      "Du hast etwas im Kopf oder möchtest dich einfach vernetzen? Mein Postfach ist immer offen.",
     connect: "Lass uns vernetzen",
   },
   footer: {

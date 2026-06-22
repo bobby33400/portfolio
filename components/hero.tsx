@@ -50,19 +50,6 @@ export function Hero() {
 
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-20 pt-28 sm:px-6">
         <motion.div variants={container} initial="hidden" animate="visible">
-          {profile.available && (
-            <motion.div
-              variants={item}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-muted-foreground"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-              </span>
-              {dict.hero.availability}
-            </motion.div>
-          )}
-
           <motion.h1
             variants={item}
             className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"

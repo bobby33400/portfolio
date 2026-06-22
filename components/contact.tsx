@@ -45,6 +45,18 @@ export function Contact() {
             {dict.contact.blurb}
           </p>
 
+          {profile.available && (
+            <div className="mt-6 flex justify-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1.5 text-sm font-medium text-muted-foreground">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                </span>
+                {dict.hero.availability}
+              </span>
+            </div>
+          )}
+
           <div className="mt-8 flex justify-center">
             <a
               href={`mailto:${profile.email}`}
