@@ -75,7 +75,7 @@ const en: Dictionary = {
       synqro: {
         description:
           "An app for groups and communities that plan events together. Synqro keeps everyone on the same page with shared deadlines for the things that need doing, attendance lists, a photo consent step (DSGVO) for events with students, and a place where people can note their allergies so no one gets left out.",
-        note: "I built Synqro around something that kept frustrating me: group events fall apart in the small details. I wanted the coordination part, the deadlines, who's coming, dietary needs and consent, to feel effortless and to put people's privacy first.",
+        note: "The idea hit me on a two day CERN trip with three of our professors. On day two we had to get to CERN on our own, but nobody in my group knew that, and the plan the professor gave us before the trip was already out of date. On top of that, the professors wanted to put our photos on the HHN website, so they went around asking every student to sign for permission by hand. Synqro is my answer to both: one place that always has the current plan, and a built in way to collect photo consent.",
       },
       protrack: {
         description:
@@ -154,7 +154,7 @@ const de: Dictionary = {
       synqro: {
         description:
           "Eine App, mit der Gruppen und Gemeinschaften gemeinsam Events planen. Synqro hält alle auf dem gleichen Stand: mit gemeinsamen Fristen für anstehende Aufgaben, Anwesenheitslisten, einer Einwilligung für Fotos (DSGVO) bei Veranstaltungen mit Schülern und einem Ort, an dem jeder seine Allergien hinterlegen kann, damit niemand außen vor bleibt.",
-        note: "Synqro ist aus einem Frust entstanden, den ich immer wieder erlebt habe: Gruppenevents scheitern an den kleinen Details. Mir war wichtig, dass die Koordination einfach bleibt, also Fristen, wer kommt, Allergien und die Einwilligung, und dass die Privatsphäre dabei an erster Stelle steht.",
+        note: "Die Idee kam mir auf einer zweitägigen CERN Exkursion mit drei unserer Professoren. Am zweiten Tag mussten wir auf eigene Faust zum CERN kommen, aber das wusste in meiner Gruppe niemand, und der Plan, den uns der Professor vor der Fahrt gegeben hatte, war schon nicht mehr aktuell. Dazu kam, dass die Professoren unsere Fotos auf die HHN Webseite stellen wollten und dafür jeden Studenten einzeln um eine Unterschrift baten. Synqro ist meine Antwort auf beides: ein Ort, an dem der Plan immer aktuell ist, und eine eingebaute Möglichkeit, die Einwilligung für Fotos einzuholen.",
       },
       protrack: {
         description:

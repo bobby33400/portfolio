@@ -76,6 +76,8 @@ export const projects: ProjectMeta[] = [
     title: "ProTrack",
     // Assumed to match Qasim's usual stack — confirm if different.
     tech: ["React Native", "Expo", "Supabase"],
-    accent: "#10b981",
+    image: "/projects/protrack.png",
+    imageContain: true,
+    accent: "#6366f1",
   },
 ];
