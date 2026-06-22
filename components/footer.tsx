@@ -11,7 +11,7 @@ export function Footer() {
   const last = rest.join(" ");
 
   return (
-    <footer className="relative overflow-hidden border-t border-border">
+    <footer className="relative overflow-hidden border-t border-border pb-2">
       <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
         {/* Brand */}
         <div>
