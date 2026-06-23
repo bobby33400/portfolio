@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import { Archivo, Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/components/i18n-provider";
 import { SkipLink } from "@/components/skip-link";
@@ -78,6 +79,7 @@ export default async function RootLayout({
         </ThemeProvider>
         <SmoothScroll />
         <CustomCursor />
+        <Analytics />
       </body>
     </html>
   );
