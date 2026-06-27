@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -11,12 +11,6 @@ import { profile } from "@/lib/content";
 export function Nav() {
   const [open, setOpen] = useState(false);
   const { dict } = useI18n();
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    restDelta: 0.001,
-  });
 
   const links = [
     { label: dict.nav.work, href: "#projects" },
@@ -68,12 +62,6 @@ export function Nav() {
             </button>
           </div>
         </nav>
-
-        {/* Scroll progress indicator */}
-        <motion.div
-          className="h-0.5 origin-left bg-accent"
-          style={{ scaleX: progress }}
-        />
       </div>
 
       {/* Mobile menu */}
